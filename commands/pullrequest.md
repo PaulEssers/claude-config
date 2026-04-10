@@ -10,29 +10,22 @@ description: Generate a GitHub CLI command to create a PR to dev using ticket in
 
 !`git branch --show-current | grep -oE 'LSP-[0-9]+' || true`
 
-## Show commits in this branch
+## Show commits in this branch (full commit messages)
 
-!`git log --oneline dev..HEAD`
-
-## Show changed files
-
-!`git diff --name-only dev...HEAD`
+!`git log dev..HEAD --pretty=format:"---%ncommit: %h%nsubject: %s%n%n%b%n"`
 
 ## Look for plan notes
 
-Search in `notes/plans/` for a file matching:
+The ticket ID was extracted above (e.g. LSP-3098). The current branch name was shown above.
 
-```
-<LSP-ID>-*.md
-```
+Use the Glob tool to search for a matching plan file. Try these two locations, substituting the actual ticket ID:
 
-For example:
+1. `notes/plans/<LSP-ID>-*.md` (relative to repo root)
+2. `/mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/<repo-name>/notes/plans/<LSP-ID>-*.md`
 
-```
-notes/plans/LSP-1234-something.md
-```
+Where `<repo-name>` is the last segment of the git repo root (e.g. `idsdb`).
 
-If such a file exists, read its contents.
+If a matching file is found, read its contents.
 
 ## Task
 
