@@ -18,10 +18,10 @@ description: Generate a GitHub CLI command to create a PR to dev using ticket in
 
 The ticket ID was extracted above (e.g. LSP-3098). The current branch name was shown above.
 
-Use the Glob tool to search for a matching plan file. Try these two locations, substituting the actual ticket ID:
+Use the Glob tool to search for a matching plan file. Try this location, substituting the actual ticket ID:
 
 1. `notes/plans/<LSP-ID>-*.md` (relative to repo root)
-2. `/mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/<repo-name>/notes/plans/<LSP-ID>-*.md`
+
 
 Where `<repo-name>` is the last segment of the git repo root (e.g. `idsdb`).
 
@@ -77,8 +77,10 @@ gh pr create \
   --body "<generated markdown description>"
 ```
 
+Or if the user explicitly asks for it, output just the generated markdown description
+
 Constraints:
 
-* The description must not exceed **20 lines**.
+* The description must not exceed **20 lines** unless specifically specified by the user.
 * Escape quotes so the command can be pasted directly into a shell.
 * **Do not execute the command**. Only print it.
