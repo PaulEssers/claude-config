@@ -1,6 +1,8 @@
 {
   "permissions": {
     "allow": [
+      "Edit(/home/paulessers/lsp/idsdb/**)",
+      "Write(/home/paulessers/lsp/idsdb/**)",
       "Read",
       "Glob",
       "Grep",
@@ -1056,6 +1058,30 @@
       "Bash(source .venv/bin/activate && python -m pytest * * * * * 2>&1 | grep * *)",
       "Bash(source .venv/bin/activate && python -m pytest * * * * * 2>&1 | grep * * | head *)",
       "Bash(source .venv/bin/activate && python -m pytest * * * * * 2>&1 | grep * * | tail *)",
+      "Bash(pytest * > tmp/*.log)",
+      "Bash(pytest * > tmp/*.log 2>&1)",
+      "Bash(pytest * * > tmp/*.log)",
+      "Bash(pytest * * > tmp/*.log 2>&1)",
+      "Bash(conda run -n * pytest * > tmp/*.log)",
+      "Bash(conda run -n * pytest * > tmp/*.log 2>&1)",
+      "Bash(conda run -n * pytest * * > tmp/*.log)",
+      "Bash(conda run -n * pytest * * > tmp/*.log 2>&1)",
+      "Bash(source .venv/bin/activate && pytest * > tmp/*.log)",
+      "Bash(source .venv/bin/activate && pytest * > tmp/*.log 2>&1)",
+      "Bash(source .venv/bin/activate && pytest * * > tmp/*.log)",
+      "Bash(source .venv/bin/activate && pytest * * > tmp/*.log 2>&1)",
+      "Bash(.venv/bin/python -m pytest * > tmp/*.log)",
+      "Bash(.venv/bin/python -m pytest * > tmp/*.log 2>&1)",
+      "Bash(.venv/bin/python -m pytest * * > tmp/*.log)",
+      "Bash(.venv/bin/python -m pytest * * > tmp/*.log 2>&1)",
+      "Bash(python -m pytest * > tmp/*.log)",
+      "Bash(python -m pytest * > tmp/*.log 2>&1)",
+      "Bash(python -m pytest * * > tmp/*.log)",
+      "Bash(python -m pytest * * > tmp/*.log 2>&1)",
+      "Bash(conda run -n * python -m pytest * > tmp/*.log)",
+      "Bash(conda run -n * python -m pytest * > tmp/*.log 2>&1)",
+      "Bash(conda run -n * python -m pytest * * > tmp/*.log)",
+      "Bash(conda run -n * python -m pytest * * > tmp/*.log 2>&1)",
       "Bash(mypy *)",
       "Bash(mypy * 2>&1)",
       "Bash(mypy * | head *)",
@@ -1254,7 +1280,8 @@
       "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories/sa_model/masterdb",
       "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/command",
       "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/repository"
+      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/repository",
+      "/home/paulessers/lsp/idsdb"
     ]
   },
   "enabledPlugins": {
