@@ -1220,11 +1220,16 @@
       "Bash(ls /home/paulessers/lsp/gen-epix-api/notes/)",
       "Read(//mnt/c/Users/PaulEssers/projects/rivm/labsentinl/gen-epix-api/notes/**)",
       "Bash(grep -n \"iLES.*Reference\\\\|Reference.*data\\\\|live.*data\\\\|data.*live\" /home/paulessers/lsp/idsdb/notes/docs/repositories_and_demo_data.md 2>/dev/null | head -20)",
-      "Read(//mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/idsdb/notes/docs/**)"
+      "Read(//mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/idsdb/notes/docs/**)",
+      "Bash(find /home/essersp/projects/gen-epix-api -name \"*.py\" | xargs grep -l \"create_repository\\\\|DictRepository\" | head -10)",
+      "Read(//home/essersp/projects/gen-epix-api/**)"
     ],
     "deny": [
       "Read(./.env)",
       "Read(./**/.env)",
+      "Read(~/**/.env)",
+      "Read(~/**/.env.*)",
+      "Read(~/**/.token*)",
       "Read(./secrets/**)",
       "Read(./secret/**)",
       "Read(./**/*secret*/**/*)",
@@ -1284,7 +1289,22 @@
       "/home/paulessers/lsp/idsdb"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/claude-config/hooks/block-secret-files.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "cq@cq": true
-  }
+  },
+  "model": "opus"
 }
