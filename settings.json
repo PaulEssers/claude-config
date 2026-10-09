@@ -1275,18 +1275,6 @@
       "Read(./**/docker-compose.override.yml)",
       "Read(./**/id_rsa)",
       "Read(./**/id_ed25519)"
-    ],
-    "additionalDirectories": [
-      "/home/paulessers/lsp/gen-epix-api/gen_epix/seqdb/services",
-      "/home/paulessers/lsp/idsdb/notes/plans",
-      "/mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/idsdb/notes/plans",
-      "/home/paulessers/claude-config",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/model",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories/sa_model/masterdb",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/command",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/repository",
-      "/home/paulessers/lsp/idsdb"
     ]
   },
   "hooks": {
