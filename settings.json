@@ -1248,11 +1248,16 @@
       "Bash(gh status:*)",
       "Bash(gh api --method GET:*)",
       "Bash(gh api -X GET:*)",
-      "Bash(echo \"exit=$?\")"
+      "Bash(echo \"exit=$?\")",
+      "Bash(find /home/essersp/projects/gen-epix-api -name \"*.py\" | xargs grep -l \"create_repository\\\\|DictRepository\" | head -10)",
+      "Read(//home/essersp/projects/gen-epix-api/**)"
     ],
     "deny": [
       "Read(./.env)",
       "Read(./**/.env)",
+      "Read(~/**/.env)",
+      "Read(~/**/.env.*)",
+      "Read(~/**/.token*)",
       "Read(./secrets/**)",
       "Read(./secret/**)",
       "Read(./**/*secret*/**/*)",
@@ -1298,10 +1303,6 @@
       "Read(./**/docker-compose.override.yml)",
       "Read(./**/id_rsa)",
       "Read(./**/id_ed25519)"
-    ],
-    "additionalDirectories": [
-      "/home/paulessers/claude-config",
-      "/home/paulessers/lsp/"
     ]
   },
   "model": "opus",
@@ -1313,5 +1314,19 @@
     "claude-opus-5-5": {
       "effortLevel": "high"
     }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/claude-config/hooks/block-secret-files.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
