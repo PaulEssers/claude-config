@@ -1247,7 +1247,8 @@
       "Bash(gh browse:*)",
       "Bash(gh status:*)",
       "Bash(gh api --method GET:*)",
-      "Bash(gh api -X GET:*)"
+      "Bash(gh api -X GET:*)",
+      "Bash(echo \"exit=$?\")"
     ],
     "deny": [
       "Read(./.env)",
@@ -1299,19 +1300,18 @@
       "Read(./**/id_ed25519)"
     ],
     "additionalDirectories": [
-      "/home/paulessers/lsp/gen-epix-api/gen_epix/seqdb/services",
-      "/home/paulessers/lsp/idsdb/notes/plans",
-      "/mnt/c/Users/PaulEssers/OneDrive - Gimix B.V/Documents/Obsidian/Learning/Projects/RIVM/repos/gen-epix/idsdb/notes/plans",
       "/home/paulessers/claude-config",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/model",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories/sa_model/masterdb",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/command",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/repositories",
-      "/home/paulessers/lsp/idsdb/idsdb/idsdb/domain/repository",
-      "/home/paulessers/lsp/idsdb"
+      "/home/paulessers/lsp/"
     ]
   },
+  "model": "opus",
   "enabledPlugins": {
-    "cq@cq": true
+    "cq@cq": true,
+    "gen-epix-dev@gen-epix-agent-skills": true
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
   }
 }
