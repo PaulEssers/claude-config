@@ -60,7 +60,9 @@ reference: `~/lsp/notes/docs/workspace_setup.md`. Rationale and gotchas:
      otherwise a new one is cut from `origin/dev`, or `origin/main` if the
      repo has no `dev`.
    - Safe to re-run: to add a repo to an existing set, run it again with that
-     repo in `--repos`.
+     repo in `--repos`. The workspace file is extended, not replaced: its
+     folders, order and settings stay, the set's missing worktrees are
+     appended (so a re-run also repairs a file that lost one).
 5. **Verify and report**: `ls -la ~/lsp/wt/<branch>/` and the HEAD of each
    worktree (`git -C ~/lsp/wt/<branch>/<repo> log --oneline -1`). Tell the user
    the branch name, the repos, the base commits, and how to open it:

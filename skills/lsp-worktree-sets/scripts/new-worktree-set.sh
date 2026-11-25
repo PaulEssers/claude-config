@@ -53,6 +53,13 @@
 # re-run / extend a set; a re-run also adds symlinks for repos cloned since).
 # Pass --no-venv to skip venv setup entirely.
 #
+# An existing workspace file is extended, not replaced: its folders, their
+# order and its settings are kept, worktrees of the set it does not list yet
+# are appended, and folders whose path no longer exists (e.g. after
+# move-worktree-set.sh) are dropped. Appending keeps the first folder, so an
+# open VS Code window on it is not restarted. The file is only written when
+# that changes it; one that is not plain JSON is left alone with a warning.
+#
 # Sets created before the wt/ layout (~/lsp/<repo>-<branch>) are not touched.
 # If one exists for this branch the script stops, since git refuses to check
 # out a branch in two worktrees anyway.
@@ -163,7 +170,6 @@ pip_install_with_fallback() {
 # Pass 1: create every worktree first, so a dependent repo's venv setup
 # (pass 2) can always find its paired dependency worktree already in place.
 mkdir -p "$set_dir"
-folders_json=""
 for repo in $repos; do
     src="$base_dir/$repo"
     dest="$set_dir/$repo"
@@ -218,8 +224,6 @@ for repo in $repos; do
             fi
         done
     fi
-
-    folders_json="${folders_json}    { \"name\": \"${repo}\", \"path\": \"wt/${safe_name}/${repo}\" },\n"
 done
 
 # Every other canonical checkout in ~/lsp (a directory with a .git directory,
@@ -233,9 +237,71 @@ for src in "$base_dir"/*/; do
     ln -s "$src" "$set_dir/$repo"
 done
 
-folders_json="${folders_json}    { \"name\": \"notes\", \"path\": \"notes\" },\n"
-folders_json="${folders_json%,\\n}"
-printf '{\n  "folders": [\n%b\n  ],\n  "settings": {}\n}\n' "$folders_json" > "$workspace_file"
+# The folders the workspace must have: every worktree in the set (this run's
+# repos first, in their order, then those earlier runs added) and the notes.
+set_folders_json() {
+    local listed=" " repo dest
+    {
+        for repo in $repos; do
+            dest="$set_dir/$repo"
+            [ -d "$dest" ] && [ ! -L "$dest" ] || continue
+            listed="$listed$repo "
+            jq -n --arg name "$repo" --arg path "wt/$safe_name/$repo" '{name: $name, path: $path}'
+        done
+        for dest in "$set_dir"/*/; do
+            dest="${dest%/}"
+            repo="$(basename "$dest")"
+            [ ! -L "$dest" ] && [ -e "$dest/.git" ] || continue
+            [[ "$listed" == *" $repo "* ]] && continue
+            jq -n --arg name "$repo" --arg path "wt/$safe_name/$repo" '{name: $name, path: $path}'
+        done
+        jq -n '{name: "notes", path: "notes"}'
+    } | jq -s .
+}
+
+# The paths in an existing workspace file that no longer exist, as a JSON
+# array. Relative paths are relative to the workspace file, i.e. ~/lsp.
+gone_paths_json() {
+    local path
+    jq -r '(.folders // [])[].path' "$workspace_file" | while IFS= read -r path; do
+        case "$path" in
+            /*) [ -e "$path" ] || printf '%s\n' "$path" ;;
+            *) [ -e "$base_dir/$path" ] || printf '%s\n' "$path" ;;
+        esac
+    done | jq -R . | jq -s .
+}
+
+# Extend the workspace file (or create it): keep what it has, drop folders
+# that no longer exist, append the set's folders it does not list yet.
+write_workspace_file() {
+    local wanted gone existing updated
+    wanted="$(set_folders_json)"
+    if [ ! -f "$workspace_file" ]; then
+        jq -n --argjson folders "$wanted" '{folders: $folders, settings: {}}' > "$workspace_file"
+        echo "Workspace written: $workspace_file"
+        return
+    fi
+    if ! existing="$(jq . "$workspace_file" 2>/dev/null)"; then
+        echo "WARNING: $workspace_file is not plain JSON (comments?); left as is." >&2
+        echo "  Make sure it lists these folders:" >&2
+        jq -r '.[] | "    \(.path)"' <<<"$wanted" >&2
+        return
+    fi
+    gone="$(gone_paths_json)"
+    updated="$(jq --argjson wanted "$wanted" --argjson gone "$gone" '
+        .folders = ((.folders // []) | map(select(.path as $p | any($gone[]; . == $p) | not)))
+        | reduce $wanted[] as $folder (.;
+            if any(.folders[]; .path == $folder.path) then . else .folders += [$folder] end)
+        | .settings //= {}' <<<"$existing")"
+    if [ "$updated" = "$existing" ]; then
+        echo "Workspace unchanged: $workspace_file"
+        return
+    fi
+    printf '%s\n' "$updated" > "$workspace_file"
+    echo "Workspace updated: $workspace_file"
+}
+
+write_workspace_file
 
 # Pass 2: venv setup, now that every worktree in the set exists.
 if [ "$add_venvs" = true ]; then
@@ -282,5 +348,4 @@ fi
 
 echo
 echo "Set directory:     $set_dir"
-echo "Workspace written: $workspace_file"
 echo "Open with: code \"$workspace_file\""
